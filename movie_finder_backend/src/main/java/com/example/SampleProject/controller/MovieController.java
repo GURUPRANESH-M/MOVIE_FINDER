@@ -1,5 +1,8 @@
-package com.example.SampleProject;
+package com.example.SampleProject.controller;
 
+import com.example.SampleProject.entity.FavoriteMovie;
+import com.example.SampleProject.entity.MovieEntity;
+import com.example.SampleProject.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +32,9 @@ public class MovieController {
         movieRepository.deleteByImdbID(id);
         }
 
+    @GetMapping("/{email}")
+    public List<FavoriteMovie> getFavorites(@PathVariable String email){
+        return movieRepository.findByUserEmail(email);
+    }
 
 }

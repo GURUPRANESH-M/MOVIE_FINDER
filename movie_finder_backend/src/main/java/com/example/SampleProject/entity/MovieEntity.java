@@ -1,4 +1,4 @@
-package com.example.SampleProject;
+package com.example.SampleProject.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,5 +20,7 @@ public class MovieEntity {
     private String year;
     private String imdbID;
     private String poster;
+
+    private String userEmail;
 
 }

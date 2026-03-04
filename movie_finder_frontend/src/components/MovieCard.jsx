@@ -1,53 +1,76 @@
+import { useNavigate } from "react-router-dom";
+
 function MovieCard({ movie, showAdd, showRemove, refreshFavs }) {
 
-  const addFavorite = async () => {
-    try {
-      await fetch("http://localhost:8080/movapi/movie", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          imdbID: movie.imdbID,
-          title: movie.Title,
-          year: movie.Year,
-          poster: movie.Poster
-        })
-      });
+  const navigate = useNavigate();
 
-      alert("Added to Favorites!");
-    } catch (error) {
-      console.error("Error adding favorite:", error);
-    }
+  const addFavorite = async () => {
+    await fetch("http://localhost:8080/movapi/movie", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        imdbID: movie.imdbID,
+        title: movie.Title,
+        year: movie.Year,
+        poster: movie.Poster
+      })
+    });
+
+    alert("Added to favorites");
   };
 
   const removeFavorite = async () => {
-    try {
-      await fetch(`http://localhost:8080/movapi/${movie.imdbID}`, {
-        method: "DELETE"
-      });
+    await fetch(`http://localhost:8080/movapi/${movie.imdbID}`, {
+      method: "DELETE"
+    });
 
+    if (refreshFavs) {
       refreshFavs();
-    } catch (error) {
-      console.error("Error removing favorite:", error);
     }
   };
 
-  return (
-    <div style={{
-      width: "200px",
-      margin: "10px",
-      padding: "10px",
-      background: "#1e293b",
-      color: "white",
-      borderRadius: "8px"
-    }}>
-      <img src={movie.Poster} alt={movie.Title} width="100%" />
-      <h4>{movie.Title}</h4>
-      <p>{movie.Year}</p>
+  const openMovieDetails = () => {
+    navigate(`/movie/${movie.imdbID}`);
+  };
 
-      {showAdd && <button onClick={addFavorite}>Add Fav</button>}
-      {showRemove && <button onClick={removeFavorite}>Remove</button>}
+  return (
+    <div className="movie-card" onClick={openMovieDetails}>
+
+      <img className="poster" src={movie.Poster} alt={movie.Title} />
+
+      <div className="card-body">
+
+        <div className="title">{movie.Title}</div>
+
+        <div className="year">{movie.Year}</div>
+
+        {showAdd && (
+          <button
+            className="btn add-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              addFavorite();
+            }}
+          >
+            Add Fav
+          </button>
+        )}
+
+        {showRemove && (
+          <button
+            className="btn remove-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              removeFavorite();
+            }}
+          >
+            Remove
+          </button>
+        )}
+
+      </div>
     </div>
   );
 }
